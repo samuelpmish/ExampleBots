@@ -65,8 +65,8 @@ class Agent(BaseAgent):
         num_segments = 30
         angle = []
         for i in range(num_segments):
-            c = math.cos(phi * float(i) / num_segments)
-            s = math.sin(phi * float(i) / num_segments)
+            c = math.cos(phi * float(i) / (num_segments - 1))
+            s = math.sin(phi * float(i) / (num_segments - 1))
             angle.append(car.pos + radius * (c * f + s * l))
 
         self.renderer.draw_polyline_3d(angle, purple)
