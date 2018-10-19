@@ -1,7 +1,7 @@
 # Overview
 
 This is a collection of example bots for demonstrating how to use the different
-tools (python bindings) available in the RLUtilities library
+tools (python bindings) available in the [RLUtilities](https://github.com/samuelpmish/RLUtilities) library
 
 ## Test them out
 
