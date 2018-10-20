@@ -11,4 +11,6 @@ To use these, you need a copy of 64-bit python 3.6
 pip install RLUtilities
 ```
 
-Then, just open a directory, for example ```0_Ball_Prediction``` and double-click run.bat
+Then, start up Rocket League, and get in free play. Pick a directory, for example ```0_Ball_Prediction``` and double-click run.bat
+
+Many of these demos require an xbox controller (or DS4Windows) to run, since they are interactive.
