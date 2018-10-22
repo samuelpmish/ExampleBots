@@ -5,7 +5,7 @@ from rlbot.utils.structures.game_data_struct import GameTickPacket
 
 from RLUtilities.GameInfo import GameInfo
 from RLUtilities.Simulation import Car, Ball
-from RLUtilities.LinearAlgebra import vec3, dot, clamp
+from RLUtilities.LinearAlgebra import vec3, dot, clip
 
 from RLUtilities.controller_input import controller
 
@@ -32,7 +32,7 @@ class Agent(BaseAgent):
         phi = math.atan2(delta_local[1], delta_local[0])
 
         # a simple steering controller that is proportional to phi
-        self.controls.steer = clamp(2.5 * phi, -1.0, 1.0)
+        self.controls.steer = clip(2.5 * phi, -1.0, 1.0)
 
         # just set the throttle to 1 so the car is always moving forward
         self.controls.throttle = 1.0

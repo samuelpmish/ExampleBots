@@ -7,12 +7,9 @@ from rlbot.utils.game_state_util import GameState, BallState, CarState, Physics,
 
 from RLUtilities.GameInfo import GameInfo
 from RLUtilities.Simulation import Car, Ball
-from RLUtilities.LinearAlgebra import vec3, dot, clamp
-
-from RLUtilities.controller_input import controller
+from RLUtilities.LinearAlgebra import vec3, dot
 
 from RLUtilities.Maneuvers import AerialTurn
-
 
 class Agent(BaseAgent):
 
