@@ -6,7 +6,7 @@ from rlbot.utils.structures.game_data_struct import GameTickPacket
 from rlbot.utils.game_state_util import GameState, BallState, CarState, Physics, Vector3, Rotator
 
 from RLUtilities.GameInfo import GameInfo
-from RLUtilities.Simulation import Car, Ball
+from RLUtilities.Simulation import Car, Ball, Input
 from RLUtilities.LinearAlgebra import vec3, dot
 
 from RLUtilities.Maneuvers import Aerial
@@ -21,7 +21,8 @@ class Agent(BaseAgent):
         self.skip = False
         self.timer = 0.0
         self.action = None
-        self.predictions = []
+        self.car_predictions = []
+        self.ball_predictions = []
 
         self.csign = 1;
         self.bsign = 1;
@@ -81,12 +82,12 @@ class Agent(BaseAgent):
 
                 # predict where the ball will be
                 prediction = Ball(self.info.ball)
-                self.predictions = [vec3(prediction.pos)]
+                self.ball_predictions = [vec3(prediction.pos)]
 
                 for i in range(150):
                     prediction.step(0.016666)
                     prediction.step(0.016666)
-                    self.predictions.append(vec3(prediction.pos))
+                    self.ball_predictions.append(vec3(prediction.pos))
 
                     # if the ball is in the air
                     if prediction.pos[2] > 100:
@@ -98,19 +99,34 @@ class Agent(BaseAgent):
                         if self.action.is_viable():
                             break
 
+            nsteps = 30
+            delta_t = self.action.t_arrival - self.info.my_car.time
+            prediction = Car(self.info.my_car)
+            self.car_predictions = [vec3(prediction.pos)]
+            for i in range(nsteps):
+                prediction.step(Input(), delta_t / nsteps)
+                self.car_predictions.append(vec3(prediction.pos))
+
             r = 200
             self.renderer.begin_rendering()
             purple = self.renderer.create_color(255, 230, 30, 230)
-            self.renderer.draw_polyline_3d(self.predictions, purple)
-            self.renderer.draw_line_3d(self.action.target - r * vec3(1,0,0),
-                                       self.action.target + r * vec3(1,0,0),
-                                       purple)
-            self.renderer.draw_line_3d(self.action.target - r * vec3(0,1,0),
-                                       self.action.target + r * vec3(0,1,0),
-                                       purple)
-            self.renderer.draw_line_3d(self.action.target - r * vec3(0,0,1),
-                                       self.action.target + r * vec3(0,0,1),
-                                       purple)
+            white  = self.renderer.create_color(255, 230, 230, 230)
+
+            x = vec3(r,0,0)
+            y = vec3(0,r,0)
+            z = vec3(0,0,r)
+            target = self.action.target
+            future = self.action.target - self.action.A
+
+            self.renderer.draw_polyline_3d(self.ball_predictions, purple)
+            self.renderer.draw_line_3d(target - x, target + x, purple)
+            self.renderer.draw_line_3d(target - y, target + y, purple)
+            self.renderer.draw_line_3d(target - z, target + z, purple)
+
+            self.renderer.draw_polyline_3d(self.car_predictions, white)
+            self.renderer.draw_line_3d(future - x, future + x, white)
+            self.renderer.draw_line_3d(future - y, future + y, white)
+            self.renderer.draw_line_3d(future - z, future + z, white)
             self.renderer.end_rendering()
 
             self.action.step(1.0 / 60.0)
